@@ -39,15 +39,15 @@ variable "address_prefixes" {
   validation {
     error_message = "Each CIDR must be unique."
     condition = length(
-      distinct([
+      distinct(flatten([
+        for zone in ["zone-1", "zone-2", "zone-3"] :
+        var.address_prefixes[zone] if var.address_prefixes[zone] != null
+      ]))
+      ) == length(
+      flatten([
         for zone in ["zone-1", "zone-2", "zone-3"] :
         var.address_prefixes[zone] if var.address_prefixes[zone] != null
       ])
-      ) == length(
-      [
-        for zone in ["zone-1", "zone-2", "zone-3"] :
-        var.address_prefixes[zone] if var.address_prefixes[zone] != null
-      ]
     )
   }
 }
